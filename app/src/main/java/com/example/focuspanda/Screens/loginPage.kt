@@ -6,133 +6,206 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.focuspanda.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(onLogin: () -> Unit, onSignUp: () -> Unit) {
-    // State for password visibility
-    var passwordVisible by remember { mutableStateOf(false) }
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFB2DFDB)), // Background color
-        contentAlignment = Alignment.Center
+fun LoginScreen() {
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        val isLandscape = maxWidth > maxHeight
+
+        // Background Image
+        Image(
+            painter = painterResource(id = R.drawable.panda_image), // Replace with your drawable resource
+            contentDescription = "Panda Background",
             modifier = Modifier
-                .padding(16.dp)
-        ) {
-            // Logo Section
-            Image(
-                painter = painterResource(id = R.drawable.panda_image), // Replace with your panda image resource
-                contentDescription = "Focus Panda Logo",
-                modifier = Modifier
-                    .size(120.dp)
-                    .padding(bottom = 16.dp)
-            )
-            Text(
-                text = "Focus Panda",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
+                .fillMaxSize(),
+            alignment = Alignment.Center
+        )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Login Card
-            Card(
-                shape = RoundedCornerShape(16.dp),
+        // Foreground Content
+        if (isLandscape) {
+            // Landscape layout
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                elevation = CardDefaults.cardElevation(8.dp)
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .background(Color.White),
+                    modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Login",
-                        fontSize = 20.sp,
+                        text = "Focus Panda",
+                        fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        color = Color.Black
                     )
 
-                    // Username Field
-                    OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
-                        label = { Text("User name") },
-                        singleLine = true,
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Login",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Username Text Field
+                    TextField(
+                        value = "",
+                        onValueChange = {},
+                        placeholder = { Text("User name") },
                         modifier = Modifier.fillMaxWidth(),
-                        trailingIcon = {
-                            Icon(imageVector = Icons.Default.Visibility, contentDescription = null)
-                        }
+                        singleLine = true,
+                        shape = RoundedCornerShape(8.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.White
+                        )
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Password Field
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Password") },
-                        singleLine = true,
+                    // Password Text Field
+                    TextField(
+                        value = "",
+                        onValueChange = {},
+                        placeholder = { Text("Password") },
                         modifier = Modifier.fillMaxWidth(),
-                        trailingIcon = {
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(
-                                    imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
+                        singleLine = true,
+                        shape = RoundedCornerShape(8.dp),
+                        visualTransformation = PasswordVisualTransformation(), // Always hides password
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.White
+                        )
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Buttons
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(
-                            onClick = onLogin,
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-                            modifier = Modifier.weight(1f)
+                            onClick = { /* Handle Login */ },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
                         ) {
-                            Text("Login")
+                            Text(text = "Login", color = Color.White)
                         }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
                         Button(
-                            onClick = onSignUp,
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C)),
-                            modifier = Modifier.weight(1f)
+                            onClick = { /* Handle Sign Up */ },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
                         ) {
-                            Text("Sign Up")
+                            Text(text = "Sign Up", color = Color.White)
                         }
+                    }
+                }
+            }
+        } else {
+            // Portrait layout
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "Focus Panda",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Login",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Username Text Field
+                TextField(
+                    value = "",
+                    onValueChange = {},
+                    placeholder = { Text("User name") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color.White
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Password Text Field
+                TextField(
+                    value = "",
+                    onValueChange = {},
+                    placeholder = { Text("Password") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    visualTransformation = PasswordVisualTransformation(), // Always hides password
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color.White
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Buttons
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = { /* Handle Login */ },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                    ) {
+                        Text(text = "Login", color = Color.White)
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(
+                        onClick = { /* Handle Sign Up */ },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                    ) {
+                        Text(text = "Sign Up", color = Color.White)
                     }
                 }
             }
@@ -142,9 +215,8 @@ fun LoginScreen(onLogin: () -> Unit, onSignUp: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
-    LoginScreen(
-        onLogin = { /* Handle Login */ },
-        onSignUp = { /* Handle Sign Up */ }
-    )
+fun PreviewLoginScreen() {
+    LoginScreen()
 }
+
+

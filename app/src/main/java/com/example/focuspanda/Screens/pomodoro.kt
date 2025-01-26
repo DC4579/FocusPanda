@@ -115,3 +115,8 @@ fun TaskRow(taskName: String, isCompleted: Boolean) {
         }
     }
 }
+@Preview(showBackground = true)
+@Composable
+fun ToDoListScreenPreview() {
+    ToDoListScreen()
+}
