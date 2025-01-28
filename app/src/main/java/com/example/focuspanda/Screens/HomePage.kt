@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.example.focuspanda.CommenSection.MainsCard
 import com.example.focuspanda.Data.QuickNavigationIterm
 import com.example.focuspanda.Model.QuickNavigate1
+import com.example.focuspanda.ui.theme.surfaceVariantLight
 
 
 @Composable
@@ -81,7 +82,7 @@ fun MainScreen() {
                     text = buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(
-                                color = Color.Black,
+                                MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp
                             )
@@ -90,7 +91,7 @@ fun MainScreen() {
                         }
                         withStyle(
                             style = SpanStyle(
-                                color = Color.Black,
+                                MaterialTheme.colorScheme.outline,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp
                             )
@@ -101,10 +102,16 @@ fun MainScreen() {
                 )
 
                 IconButton(
-                    onClick = { /* Handle view cart logic */ },
+                    onClick = { /* Handle user profile logic */ },
                     modifier = Modifier.size(36.dp)
                 ) {
-                    Icon(Icons.Filled.Person, contentDescription = "View Cart")
+                    Image(
+                        painter = painterResource(id = R.drawable.panda_image),
+                        contentDescription = "User Profile",
+                        modifier = Modifier
+                            .size(50.dp)
+                            //.clip(RoundedCornerShape(30)) // Makes the image circular
+                    )
                 }
             }
 
