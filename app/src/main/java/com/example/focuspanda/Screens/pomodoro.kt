@@ -1,122 +1,167 @@
 package com.example.focuspanda.Screens
 
+
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.focuspanda.CommenSection.BottomNavigationScreen
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToDoListScreen() {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("To do List") },
-                actions = {
-                    Button(
-                        onClick = { /* Handle log out */ },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF4CAF50), // Green color
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text("Log Out")
-                    }
-                },
-            )
+fun PomodoroTimerScreen() {
+    var minutes by remember { mutableStateOf(20) }
+    var seconds by remember { mutableStateOf(0) }
 
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        val isLandscape = maxWidth > maxHeight
 
-        },
-        bottomBar = {
-            BottomNavigationScreen() // Add your navigation bar here
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* Handle add new to-do */ },
-                containerColor = Color(0xFF4CAF50)
+        if (isLandscape) {
+            // Landscape Layout
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Add Task")
+                TimerDisplay(minutes, seconds)
+                ControlButtons(
+                    onTakeBreak = { /* Take a break action */ },
+                    onCancelSession = { /* Cancel session action */ },
+                    onBack = { /* Navigate back */ }
+                )
+            }
+        } else {
+            // Portrait Layout
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                TimerDisplay(minutes, seconds)
+                Spacer(modifier = Modifier.height(24.dp))
+                ControlButtons(
+                    onTakeBreak = { /* Take a break action */ },
+                    onCancelSession = { /* Cancel session action */ },
+                    onBack = { /* Navigate back */ }
+                )
             }
         }
-    ) { innerPadding ->
-        Column(
+
+        // Floating Action Button
+        FloatingActionButton(
+            onClick = { /* Handle edit session */ },
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+                .align(Alignment.BottomEnd)
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            containerColor = Color(0xFF4CAF50)
         ) {
-            Text(
-                text = "To do List",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // To-do items
-            val tasks = listOf(
-                "Chemistry 3hr study",
-                "Chemistry Tute Work",
-                "Chemistry Homework",
-                "Biology Paper",
-                "Physics Past Questions"
-            )
-
-            tasks.forEachIndexed { index, task ->
-                TaskRow(taskName = task, isCompleted = index == 3) // Set Biology Paper as completed
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            Spacer(modifier = Modifier.weight(1f)) // Push content up
-            Button(onClick = { /* Handle Back navigation */ }) {
-                Text("Back")
-            }
+            Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Session")
         }
     }
 }
 
 @Composable
-fun TaskRow(taskName: String, isCompleted: Boolean) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFFF5F5F5)) // Light gray
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+fun TimerDisplay(minutes: Int, seconds: Int) {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = taskName,
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge
+            text = "Pomodoro Timer",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
         )
-        Checkbox(
-            checked = isCompleted,
-            onCheckedChange = { /* Handle checkbox state change */ }
+        Text(
+            text = "1 hr session",
+            fontSize = 16.sp,
+            color = Color.Gray
         )
-        IconButton(
-            onClick = { /* Handle delete task */ }
+        Spacer(modifier = Modifier.height(24.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Default.Delete, contentDescription = "Delete Task")
+            TimerBox(value = minutes)
+            Text(text = ":", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+            TimerBox(value = seconds)
         }
     }
 }
+
+@Composable
+fun TimerBox(value: Int) {
+    Box(
+        modifier = Modifier
+            .size(80.dp)
+            .background(Color(0xFFEDE7F6), shape = RoundedCornerShape(8.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = value.toString().padStart(2, '0'),
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+    }
+}
+
+@Composable
+fun ControlButtons(
+    onTakeBreak: () -> Unit,
+    onCancelSession: () -> Unit,
+    onBack: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(
+                onClick = onTakeBreak,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB2FF59))
+            ) {
+                Text("Take Break")
+            }
+            Button(
+                onClick = onCancelSession,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB39DDB))
+            ) {
+                Text("Cancel Session")
+            }
+        }
+        Button(
+            onClick = onBack,
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+        ) {
+            Text("Back")
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-fun ToDoListScreenPreview() {
-    ToDoListScreen()
+fun PomodoroTimerScreenPreview() {
+    PomodoroTimerScreen()
 }
+

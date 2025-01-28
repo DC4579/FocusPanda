@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -80,18 +81,18 @@ fun MainScreen() {
                     text = buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(
-                                color = Color(0xFF4CAF50),
+                                color = Color.Black,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 34.sp
+                                fontSize = 20.sp
                             )
                         ) {
                             append("Focus ")
                         }
                         withStyle(
                             style = SpanStyle(
-                                color = Color.Red,
+                                color = Color.Black,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 34.sp
+                                fontSize = 20.sp
                             )
                         ) {
                             append("Panda")
@@ -108,30 +109,30 @@ fun MainScreen() {
             }
 
             // Search Box Section
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 22.dp)
-            ) {
-                OutlinedTextField(
-                    value = searchQuery.value,
-                    onValueChange = { searchQuery.value = it },
-                    label = { Text("Search") },
-                    leadingIcon = {
-                        Icon(Icons.Filled.Search, contentDescription = "Search Icon")
-                    },
-                    shape = RoundedCornerShape(26.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center)
-                )
-            }
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 22.dp)
+//            ) {
+//                OutlinedTextField(
+//                    value = searchQuery.value,
+//                    onValueChange = { searchQuery.value = it },
+//                    label = { Text("Search") },
+//                    leadingIcon = {
+//                        Icon(Icons.Filled.Search, contentDescription = "Search Icon")
+//                    },
+//                    shape = RoundedCornerShape(26.dp),
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .align(Alignment.Center)
+//                )
+//            }
 
             Spacer(modifier = Modifier.height(10.dp))
 
             // Banner Section
             Image(
-                painter = painterResource(R.drawable.duli),
+                painter = painterResource(R.drawable.motivation_qoute),
                 contentDescription = "Banner",
                 modifier = Modifier
                     .fillMaxWidth()

@@ -24,7 +24,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.focuspanda.Screens.PomodoroTimerScreen
 import com.example.focuspanda.Screens.ToDoListScreen
+import com.example.focuspanda.Screens.UserProfileScreen
 
 
 @Composable
@@ -67,8 +69,11 @@ fun BottomNavigationScreen(modifier: Modifier = Modifier) {
 @Composable
 fun contentScreen (modifier: Modifier = Modifier,selectedIndex :Int ) {
     when(selectedIndex){
-        0->MainScreen()
+        0->PomodoroTimerScreen()
         1->ToDoListScreen()
+        2->MainScreen()
+        3-> UserProfileScreen()
+
 
 
 
