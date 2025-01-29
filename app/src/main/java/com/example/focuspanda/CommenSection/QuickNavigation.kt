@@ -73,8 +73,8 @@ fun MainsCard(
                     .padding(top = 4.dp) // Reduced padding to minimize space
             )
             Text(
-                text = "Rs $price",
-                fontSize = 16.sp,
+                text = title,
+                fontSize = 10.sp,
                 color = Color.Black,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,

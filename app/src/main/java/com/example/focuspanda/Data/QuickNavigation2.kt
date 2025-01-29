@@ -7,24 +7,24 @@ class QuickNavigationIterm {
     fun loadQuickNavigationIterm ():List<QuickNavigate1>{
         return listOf<QuickNavigate1>(
             QuickNavigate1(
-                R.drawable.duli,
-                R.string.item_latte,
-                R.string.price_latte,
+                R.drawable.pomodoro,
+                R.string.item_Pomodoro,
+                R.string.Pomo_time,
+            ),
+            QuickNavigate1(
+                R.drawable.,
+                R.string.item_Flashcard,
+                R.string.Knowledge,
             ),
             QuickNavigate1(
                 R.drawable.duli,
-                R.string.item_espresso,
-                R.string.price_latte,
+                R.string.item_Notes,
+                R.string.Note,
             ),
             QuickNavigate1(
-                R.drawable.duli,
-                R.string.item_latte,
-                R.string.price_latte,
-            ),
-            QuickNavigate1(
-                R.drawable.duli,
-                R.string.item_latte,
-                R.string.price_latte,
+                R.drawable.flash,
+                R.string.item_Flashcard,
+                R.string.Knowledge,
             )
         )
     }

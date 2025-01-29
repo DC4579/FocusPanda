@@ -159,7 +159,7 @@ fun MainScreen() {
             // Featured Items Section
             Text(
                 text = "Quick Navigation",
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold,fontSize = 20.sp), // Apply bold style
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold,fontSize = 18.sp), // Apply bold style
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .align(Alignment.Start)
