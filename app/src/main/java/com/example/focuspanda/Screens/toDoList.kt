@@ -1,9 +1,17 @@
 package com.example.focuspanda.Screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -12,72 +20,63 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.focuspanda.Model.Task
+import com.example.focuspanda.R
 
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToDoListScreen() {
-    var tasks by remember {
-        mutableStateOf(
-            listOf(
-                Task("Chemistry 3hr study"),
-                Task("Chemistry Tute Work"),
-                Task("Chemistry Homework"),
-                Task("Biology Paper", true),
-                Task("Physics Past Questions")
-            )
-        )
-    }
+fun ToDoListScreen(navController: NavController) {
+    var isFabVisible by remember { mutableStateOf(false) }
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        val isLandscape = maxWidth > maxHeight
+    LaunchedEffect(Unit) { isFabVisible = true } // Ensures FAB animates when screen appears
 
-        if (isLandscape) {
-            // Landscape Layout
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TaskList(tasks, onDelete = { task -> tasks = tasks.filter { it != task } })
-                BackAndEditButtons()
+    Scaffold(
+        floatingActionButton = {
+            AnimatedFAB(isFabVisible = isFabVisible) {
+                // TODO: Implement add task functionality
             }
-        } else {
-            // Portrait Layout
+        }
+    ) { paddingValues ->
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
+        ) {
+            val isLandscape = maxWidth > maxHeight
+            val scrollState = rememberScrollState()
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .background(Color(0xFFD7F2D3)) // ✅ Soft green background
+                    .verticalScroll(scrollState), // ✅ Enables scrolling in landscape
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                TaskList(tasks, onDelete = { task -> tasks = tasks.filter { it != task } })
-                Spacer(modifier = Modifier.height(24.dp))
-                BackAndEditButtons()
+                ToDoListContent()
+                BackButton(navController = navController, modifier = Modifier.align(Alignment.CenterHorizontally))
             }
         }
     }
 }
 
 @Composable
-fun TaskList(tasks: List<Task>, onDelete: (Task) -> Unit) {
+fun ToDoListContent() {
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Title
         Text(
             text = "To Do List",
             fontSize = 24.sp,
@@ -85,81 +84,102 @@ fun TaskList(tasks: List<Task>, onDelete: (Task) -> Unit) {
             color = Color.Black,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        tasks.forEach { task ->
-            TaskRow(task = task, onDelete = { onDelete(task) })
-        }
-    }
-}
 
-@Composable
-fun TaskRow(task: Task, onDelete: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFFEDE7F6), RoundedCornerShape(8.dp))
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = task.title,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black,
-            modifier = Modifier.weight(1f)
+        // Example To-Do Items (Static UI)
+        val exampleTasks = listOf(
+            "Chemistry 3hr study",
+            "Chemistry Tute Work",
+            "Chemistry Homework",
+            "Biology Paper",
+            "Physics Past Questions",
+            "Math Assignment",
+            "History Essay",
+            "Computer Science Project"
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(
-                checked = task.isCompleted,
-                onCheckedChange = null // Handle checkbox state here if needed
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            IconButton(onClick = onDelete) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete Task",
-                    tint = Color.Red
-                )
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(horizontal = 8.dp)
+        ) {
+            exampleTasks.forEach { task ->
+                TaskRowUIOnly(task)
             }
         }
     }
 }
 
 @Composable
-fun BackAndEditButtons() {
-    Box(
-        modifier = Modifier.fillMaxSize()
+fun TaskRowUIOnly(task: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFE8EAF6), RoundedCornerShape(8.dp))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Back Button at its original position (bottom-left)
-        Button(
-            onClick = { /* Handle back action */ },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-            modifier = Modifier
-                .align(Alignment.BottomStart) // Align to bottom-left
-                .padding(16.dp)
-        ) {
-            Text("Back")
-        }
+        Text(
+            text = task,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.Black
+        )
 
-        // FAB in the bottom-right corner
-        FloatingActionButton(
-            onClick = { /* Handle add/edit task action */ },
-            containerColor = Color(0xFF4CAF50),
-            modifier = Modifier
-                .align(Alignment.BottomEnd) // Align to bottom-right
-                .padding(16.dp)
-        ) {
-            Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Task")
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = false,
+                onCheckedChange = null, // Placeholder, no functionality
+                colors = CheckboxDefaults.colors(
+                    uncheckedColor = Color.Black,
+                    checkedColor = Color(0xFF4CAF50)
+                )
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Delete Task",
+                tint = Color.Red,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }
 
+@Composable
+fun BackButton(navController: NavController, modifier: Modifier = Modifier) {
+    Button(
+        onClick = {
+            navController.navigate("dashboard") {
+                popUpTo("dashboard") { inclusive = true }
+            }
+        },
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+        modifier = modifier.padding(8.dp)
+    ) {
+        Text("Back")
+    }
+}
 
-
-
+// ✅ Animated FAB Function
+@Composable
+fun AnimatedFAB(isFabVisible: Boolean, onClick: () -> Unit) {
+    AnimatedVisibility(
+        visible = isFabVisible,
+        enter = fadeIn(animationSpec = tween(700)) + slideInVertically(initialOffsetY = { 100 }),
+        exit = fadeOut(animationSpec = tween(300)) + slideOutVertically(targetOffsetY = { 100 })
+    ) {
+        FloatingActionButton(
+            onClick = onClick,
+            containerColor = Color(0xFF4CAF50),
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(imageVector = Icons.Default.Edit, contentDescription = "Add Task")
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun ToDoListScreenPreview() {
-    ToDoListScreen()
+    ToDoListScreen(navController = rememberNavController())
 }

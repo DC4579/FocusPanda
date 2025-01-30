@@ -5,6 +5,7 @@ package com.example.focuspanda.Screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -13,68 +14,78 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PomodoroTimerScreen() {
-    var minutes by remember { mutableStateOf(20) }
+fun PomodoroTimerScreen(navController: NavController) {
+    var minutes by remember { mutableStateOf(25) }
     var seconds by remember { mutableStateOf(0) }
+    var isRunning by remember { mutableStateOf(false) }
+    var showCustomTimeDialog by remember { mutableStateOf(false) }
+
+    // Timer countdown logic
+    LaunchedEffect(isRunning) {
+        while (isRunning && (minutes > 0 || seconds > 0)) {
+            delay(1000L)
+            if (seconds == 0) {
+                if (minutes > 0) {
+                    minutes--
+                    seconds = 59
+                } else {
+                    isRunning = false // Stop timer when it reaches 00:00
+                }
+            } else {
+                seconds--
+            }
+        }
+    }
 
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color(0xFFD7F2D3)) // ✅ Green Background
     ) {
         val isLandscape = maxWidth > maxHeight
 
-        if (isLandscape) {
-            // Landscape Layout
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TimerDisplay(minutes, seconds)
-                ControlButtons(
-                    onTakeBreak = { /* Take a break action */ },
-                    onCancelSession = { /* Cancel session action */ },
-                    onBack = { /* Navigate back */ }
-                )
-            }
-        } else {
-            // Portrait Layout
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                TimerDisplay(minutes, seconds)
-                Spacer(modifier = Modifier.height(24.dp))
-                ControlButtons(
-                    onTakeBreak = { /* Take a break action */ },
-                    onCancelSession = { /* Cancel session action */ },
-                    onBack = { /* Navigate back */ }
-                )
-            }
-        }
-
-        // Floating Action Button
-        FloatingActionButton(
-            onClick = { /* Handle edit session */ },
+        Column(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
+                .fillMaxSize()
                 .padding(16.dp),
-            containerColor = Color(0xFF4CAF50)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Session")
+            TimerDisplay(minutes, seconds)
+            Spacer(modifier = Modifier.height(24.dp))
+            ControlButtons(
+                isRunning = isRunning,
+                onStartPause = { isRunning = !isRunning },
+                onReset = {
+                    isRunning = false
+                    minutes = 25
+                    seconds = 0
+                },
+                onSetCustomTime = { showCustomTimeDialog = true },
+                onBack = { navController.popBackStack() }
+            )
         }
+    }
+
+    if (showCustomTimeDialog) {
+        CustomTimeDialog(
+            onDismiss = { showCustomTimeDialog = false },
+            onConfirm = { customMinutes, customSeconds ->
+                minutes = customMinutes
+                seconds = customSeconds
+                showCustomTimeDialog = false
+            }
+        )
     }
 }
 
@@ -89,11 +100,6 @@ fun TimerDisplay(minutes: Int, seconds: Int) {
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
-        )
-        Text(
-            text = "1 hr session",
-            fontSize = 16.sp,
-            color = Color.Gray
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(
@@ -125,8 +131,10 @@ fun TimerBox(value: Int) {
 
 @Composable
 fun ControlButtons(
-    onTakeBreak: () -> Unit,
-    onCancelSession: () -> Unit,
+    isRunning: Boolean,
+    onStartPause: () -> Unit,
+    onReset: () -> Unit,
+    onSetCustomTime: () -> Unit,
     onBack: () -> Unit
 ) {
     Column(
@@ -138,17 +146,23 @@ fun ControlButtons(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
-                onClick = onTakeBreak,
+                onClick = onStartPause,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB2FF59))
             ) {
-                Text("Take Break")
+                Text(if (isRunning) "Pause" else "Start")
             }
             Button(
-                onClick = onCancelSession,
+                onClick = onReset,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB39DDB))
             ) {
-                Text("Cancel Session")
+                Text("Reset")
             }
+        }
+        Button(
+            onClick = onSetCustomTime,
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFC107))
+        ) {
+            Text("Set Custom Time")
         }
         Button(
             onClick = onBack,
@@ -159,9 +173,57 @@ fun ControlButtons(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun PomodoroTimerScreenPreview() {
-    PomodoroTimerScreen()
+fun CustomTimeDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (customMinutes: Int, customSeconds: Int) -> Unit
+) {
+    var customMinutes by remember { mutableStateOf("") }
+    var customSeconds by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val minutes = customMinutes.toIntOrNull() ?: 0
+                    val seconds = customSeconds.toIntOrNull() ?: 0
+                    onConfirm(minutes, seconds)
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            Button(onClick = { onDismiss() }) {
+                Text("Cancel")
+            }
+        },
+        title = { Text("Set Custom Time") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = customMinutes,
+                    onValueChange = { customMinutes = it },
+                    label = { Text("Minutes") },
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = customSeconds,
+                    onValueChange = { customSeconds = it },
+                    label = { Text("Seconds") },
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    )
 }
 
+@Preview(showBackground = true, name = "Pomodoro Timer")
+@Composable
+fun PomodoroTimerScreenPreview() {
+    PomodoroTimerScreen(navController = rememberNavController())
+}

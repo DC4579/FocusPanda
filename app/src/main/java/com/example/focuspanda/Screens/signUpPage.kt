@@ -1,5 +1,7 @@
 package com.example.focuspanda.Screens
 
+import android.widget.Toast
+import androidx.compose.material3.TextField
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,207 +28,150 @@ import androidx.compose.ui.unit.sp
 import com.example.focuspanda.R
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun SignUpScreen(onGoBack: () -> Unit) {
-    BoxWithConstraints(
+fun SignUpScreen(navController: NavController) {
+    val username = remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
+    val phoneNumber = remember { mutableStateOf("") } // Phone number field
+    val password = remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFD6F5D6), Color(0xFFA1D6A1))
-                )
-            )
+            .background(Color(0xFFD7F2D3)) // Soft green background
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        val isLandscape = maxWidth > maxHeight
-
-        // Background Image
-        Image(
-            painter = painterResource(id = R.drawable.panda_image),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            alignment = Alignment.Center
-        )
-
-        // Semi-transparent overlay
-        Box(
+        // Add scrollable container
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0x88000000)) // Semi-transparent overlay
-        )
-
-        if (isLandscape) {
-            // Landscape Layout
-            Row(
+                .verticalScroll(rememberScrollState()), // Enables scrolling
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Panda Image
+            Image(
+                painter = painterResource(id = R.drawable.panda_image), // Replace with your panda image resource
+                contentDescription = "Focus Panda",
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Title Section
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Focus Panda",
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 30.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-                    Text(
-                        text = "Sign Up",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontSize = 24.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-                }
+                    .size(120.dp)
+                    .padding(bottom = 16.dp)
+            )
 
-                // Form Section with Scroll
-                Column(
-                    modifier = Modifier
-                        .weight(2f)
-                        .fillMaxHeight()
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    SignUpForm(onGoBack)
-                }
-            }
-        } else {
-            // Portrait Layout
+            // Form Container
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xCCFFFFFF)) // Semi-transparent white
+                    .padding(24.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Focus Panda",
-                    style = MaterialTheme.typography.headlineLarge.copy(
-                        fontSize = 30.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                Text(
                     text = "Sign Up",
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontSize = 24.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    ),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                // Username field
+                TextField(
+                    value = username.value,
+                    onValueChange = { username.value = it },
+                    label = { Text("User name") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    shape = RoundedCornerShape(12.dp)
+                )
 
-                // Form Section
-                SignUpForm(onGoBack)
+                // Email field
+                TextField(
+                    value = email.value,
+                    onValueChange = { email.value = it },
+                    label = { Text("Email") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    shape = RoundedCornerShape(12.dp)
+                )
+
+                // Phone Number field
+                TextField(
+                    value = phoneNumber.value,
+                    onValueChange = { phoneNumber.value = it },
+                    label = { Text("Phone Number") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    shape = RoundedCornerShape(12.dp)
+                )
+
+                // Password field
+                TextField(
+                    value = password.value,
+                    onValueChange = { password.value = it },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    shape = RoundedCornerShape(12.dp)
+                )
+
+                // Buttons
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = {
+                            if (username.value.isNotEmpty() &&
+                                email.value.isNotEmpty() &&
+                                phoneNumber.value.isNotEmpty() &&
+                                password.value.isNotEmpty()
+                            ) {
+                                Toast.makeText(context, "Account Created!", Toast.LENGTH_SHORT).show()
+                                navController.navigate("login") {
+                                    popUpTo("signup") { inclusive = true }
+                                }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Please fill all fields",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20)),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(text = "Create Account", color = Color.White)
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(
+                        onClick = { navController.navigate("login") },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(text = "Go Back", color = Color.White)
+                    }
+                }
             }
         }
     }
 }
 
-@Composable
-fun SignUpForm(onGoBack: () -> Unit) {
-    val username = remember { mutableStateOf(TextFieldValue()) }
-    val email = remember { mutableStateOf(TextFieldValue()) }
-    val password = remember { mutableStateOf(TextFieldValue()) }
-    val confirmPassword = remember { mutableStateOf(TextFieldValue()) }
 
-    val textFieldModifier = Modifier
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(16.dp))
-        .background(Color.White)
-        .padding(8.dp)
-
-    OutlinedTextField(
-        value = username.value,
-        onValueChange = { username.value = it },
-        placeholder = { Text("Enter User name") },
-        modifier = textFieldModifier
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    OutlinedTextField(
-        value = email.value,
-        onValueChange = { email.value = it },
-        placeholder = { Text("Enter Email") },
-        modifier = textFieldModifier
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    OutlinedTextField(
-        value = password.value,
-        onValueChange = { password.value = it },
-        placeholder = { Text("Password") },
-        visualTransformation = PasswordVisualTransformation(),
-        modifier = textFieldModifier
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    OutlinedTextField(
-        value = confirmPassword.value,
-        onValueChange = { confirmPassword.value = it },
-        placeholder = { Text("Retype Password") },
-        visualTransformation = PasswordVisualTransformation(),
-        modifier = textFieldModifier
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    // Buttons
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Button(
-            onClick = { /* Handle Sign-Up Logic */ },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 8.dp)
-        ) {
-            Text(text = "Create Account", color = Color.White, textAlign = TextAlign.Center)
-        }
-        Button(
-            onClick = onGoBack,
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 8.dp)
-        ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Go Back", tint = Color.White)
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(text = "Go Back", color = Color.White)
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SignUpScreenPreview() {
-    SignUpScreen(onGoBack = {})
-}
 
 
 

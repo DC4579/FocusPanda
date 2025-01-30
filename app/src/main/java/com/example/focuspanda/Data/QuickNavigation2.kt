@@ -4,27 +4,27 @@ import com.example.focuspanda.Model.QuickNavigate1
 import com.example.focuspanda.R
 
 class QuickNavigationIterm {
-    fun loadQuickNavigationIterm ():List<QuickNavigate1>{
-        return listOf<QuickNavigate1>(
+    fun loadQuickNavigationIterm(): List<QuickNavigate1> {
+        return listOf(
             QuickNavigate1(
-                R.drawable.pomodoro,
-                R.string.item_Pomodoro,
-                R.string.Pomo_time,
+                imageResId = R.drawable.pomodoro,
+                feature = "PomodoroTimer",
+                details = "Boost productivity with Pomodoro sessions."
             ),
             QuickNavigate1(
-                R.drawable.,
-                R.string.item_Flashcard,
-                R.string.Knowledge,
+                imageResId = R.drawable.flashcards,
+                feature = "Flashcards",
+                details = "Revise key concepts quickly."
             ),
             QuickNavigate1(
-                R.drawable.duli,
-                R.string.item_Notes,
-                R.string.Note,
+                imageResId = R.drawable.mind,
+                feature = "MindMaps",
+                details = "Retrace your studies effectively."
             ),
             QuickNavigate1(
-                R.drawable.flash,
-                R.string.item_Flashcard,
-                R.string.Knowledge,
+                imageResId = R.drawable.study,
+                feature = "FocusMode",
+                details = "Minimize distractions for deep work."
             )
         )
     }

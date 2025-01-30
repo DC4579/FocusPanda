@@ -2,115 +2,146 @@ package com.example.focuspanda.Screens
 
 
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+
 import com.example.focuspanda.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen() {
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
+fun LoginScreen(navController: NavController) {
+    val username = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val passwordVisible = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFD7F2D3)) // Soft green background
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        val isLandscape = maxWidth > maxHeight
-
-        // Background Image
-        Image(
-            painter = painterResource(id = R.drawable.panda_image), // Replace with your drawable resource
-            contentDescription = "Panda Background",
+        Column(
             modifier = Modifier
-                .fillMaxSize(),
-            alignment = Alignment.Center
-        )
-
-        // Foreground Content
-        if (isLandscape) {
-            // Landscape layout
-            Row(
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center // Centers content
+        ) {
+            // **Larger Panda Image**
+            Image(
+                painter = painterResource(id = R.drawable.panda_image), // Update with your image resource
+                contentDescription = "Focus Panda",
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
+                    .size(200.dp) // **Increased size**
+                    .padding(bottom = 10.dp)
+            )
+
+            // **Login Form Container**
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f) // Makes it more compact
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xCCFFFFFF)),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.elevatedCardElevation(6.dp)
             ) {
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "Focus Panda",
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     Text(
                         text = "Login",
-                        fontSize = 24.sp,
+                        fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
-                }
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // Username Text Field
-                    TextField(
-                        value = "",
-                        onValueChange = {},
-                        placeholder = { Text("User name") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        shape = RoundedCornerShape(8.dp),
-                        colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.White
-                        )
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Password Text Field
-                    TextField(
-                        value = "",
-                        onValueChange = {},
-                        placeholder = { Text("Password") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        shape = RoundedCornerShape(8.dp),
-                        visualTransformation = PasswordVisualTransformation(), // Always hides password
-                        colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.White
-                        )
+                    // **Username Field**
+                    OutlinedTextField(
+                        value = username.value,
+                        onValueChange = { username.value = it },
+                        label = { Text("User name") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    // **Password Field with Eye Icon**
+                    OutlinedTextField(
+                        value = password.value,
+                        onValueChange = { password.value = it },
+                        label = { Text("Password") },
+                        visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (passwordVisible.value) R.drawable.open_eye else R.drawable.closed_eye
+                                    ),
+                                    contentDescription = if (passwordVisible.value) "Hide Password" else "Show Password"
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true
+                    )
 
-                    // Buttons
+                    // **Login & Sign-Up Buttons**
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Button(
-                            onClick = { /* Handle Login */ },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                            onClick = {
+                                if (username.value.isNotEmpty() && password.value.isNotEmpty()) {
+                                    navController.navigate("home") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Please enter both username and password",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20)),
+                            modifier = Modifier.weight(1f)
                         ) {
                             Text(text = "Login", color = Color.White)
                         }
@@ -118,94 +149,12 @@ fun LoginScreen() {
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Button(
-                            onClick = { /* Handle Sign Up */ },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                            onClick = { navController.navigate("signup") },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                            modifier = Modifier.weight(1f)
                         ) {
                             Text(text = "Sign Up", color = Color.White)
                         }
-                    }
-                }
-            }
-        } else {
-            // Portrait layout
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = "Focus Panda",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Login",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Username Text Field
-                TextField(
-                    value = "",
-                    onValueChange = {},
-                    placeholder = { Text("User name") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Password Text Field
-                TextField(
-                    value = "",
-                    onValueChange = {},
-                    placeholder = { Text("Password") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    shape = RoundedCornerShape(8.dp),
-                    visualTransformation = PasswordVisualTransformation(), // Always hides password
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(
-                        onClick = { /* Handle Login */ },
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
-                    ) {
-                        Text(text = "Login", color = Color.White)
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Button(
-                        onClick = { /* Handle Sign Up */ },
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
-                    ) {
-                        Text(text = "Sign Up", color = Color.White)
                     }
                 }
             }
@@ -213,10 +162,9 @@ fun LoginScreen() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Login Screen Preview", widthDp = 360, heightDp = 640)
 @Composable
-fun PreviewLoginScreen() {
-    LoginScreen()
+fun LoginScreenPreview() {
+    LoginScreen(navController = rememberNavController())
 }
-
 

@@ -28,16 +28,16 @@ import androidx.compose.ui.unit.sp
 fun MainsCard(
     imageResourceId: Int,
     title: String,
-    price: String,
+    details: String,
     backgroundColor: Color = Color.White,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
-            .padding(horizontal = 8.dp, vertical = 8.dp) // Reduced padding slightly for compactness
+            .padding(horizontal = 8.dp, vertical = 8.dp)
             .width(170.dp)
-            .height(190.dp) // Reduced height slightly to bring elements closer
+            .height(190.dp)
             .clickable { onClick() }
             .shadow(
                 elevation = 8.dp,
@@ -48,44 +48,40 @@ fun MainsCard(
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column(
-            modifier = Modifier.padding(8.dp) // Added padding inside the column
+            modifier = Modifier.padding(8.dp)
         ) {
             Image(
                 painter = painterResource(imageResourceId),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .height(110.dp) // Reduced height of the image to save space
+                    .height(110.dp)
                     .fillMaxWidth()
                     .shadow(
                         elevation = 8.dp,
-                        shape = RoundedCornerShape(10.dp), // Updated for more rounded corners
+                        shape = RoundedCornerShape(10.dp),
                         ambientColor = Color.Black,
                         spotColor = Color.Black
                     ),
             )
             Text(
                 text = title,
-                fontSize = 16.sp, // Slightly smaller text size for better layout fit
+                fontSize = 16.sp,
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp) // Reduced padding to minimize space
+                    .padding(top = 4.dp)
             )
             Text(
-                text = title,
-                fontSize = 10.sp,
-                color = Color.Black,
+                text = details, // Show details instead of title
+                fontSize = 12.sp,
+                color = Color.Gray,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Normal,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp) // Reduced vertical padding
+                    .padding(vertical = 4.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp)) // Added a small spacer for better alignment
-
-
         }
-
     }
 }
