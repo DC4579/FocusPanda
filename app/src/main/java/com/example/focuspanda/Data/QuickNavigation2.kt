@@ -22,7 +22,7 @@ class QuickNavigationIterm {
                 details = "Retrace your studies effectively."
             ),
             QuickNavigate1(
-                imageResId = R.drawable.study,
+                imageResId = R.drawable.focus,
                 feature = "FocusMode",
                 details = "Minimize distractions for deep work."
             )

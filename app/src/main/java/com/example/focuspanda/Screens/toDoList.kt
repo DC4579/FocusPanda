@@ -57,8 +57,8 @@ fun ToDoListScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFD7F2D3)) // ✅ Soft green background
-                    .verticalScroll(scrollState), // ✅ Enables scrolling in landscape
+                    .background(MaterialTheme.colorScheme.background) //
+                    .verticalScroll(scrollState), //
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ToDoListContent()
@@ -81,11 +81,11 @@ fun ToDoListContent() {
             text = "To Do List",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Example To-Do Items (Static UI)
+        //  To-Do Items
         val exampleTasks = listOf(
             "Chemistry 3hr study",
             "Chemistry Tute Work",
@@ -128,7 +128,7 @@ fun TaskRowUIOnly(task: String) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = false,
-                onCheckedChange = null, // Placeholder, no functionality
+                onCheckedChange = null, // Placeholder for non functionality
                 colors = CheckboxDefaults.colors(
                     uncheckedColor = Color.Black,
                     checkedColor = Color(0xFF4CAF50)
@@ -153,14 +153,15 @@ fun BackButton(navController: NavController, modifier: Modifier = Modifier) {
                 popUpTo("dashboard") { inclusive = true }
             }
         },
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-        modifier = modifier.padding(8.dp)
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50),
+            contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer)),
+            modifier = modifier.padding(0.1.dp)
     ) {
         Text("Back")
     }
 }
 
-// ✅ Animated FAB Function
+//  Animated FAB Function
 @Composable
 fun AnimatedFAB(isFabVisible: Boolean, onClick: () -> Unit) {
     AnimatedVisibility(

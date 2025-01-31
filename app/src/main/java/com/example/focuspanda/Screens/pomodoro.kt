@@ -50,7 +50,7 @@ fun PomodoroTimerScreen(navController: NavController) {
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD7F2D3)) // ✅ Green Background
+            .background(MaterialTheme.colorScheme.background)
     ) {
         val isLandscape = maxWidth > maxHeight
 
@@ -99,7 +99,7 @@ fun TimerDisplay(minutes: Int, seconds: Int) {
             text = "Pomodoro Timer",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(
@@ -140,33 +140,39 @@ fun ControlButtons(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
+
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly,
+
         ) {
             Button(
                 onClick = onStartPause,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB2FF59))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00897B),
+                    contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer))
             ) {
                 Text(if (isRunning) "Pause" else "Start")
             }
             Button(
                 onClick = onReset,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB39DDB))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF81C784),
+                    contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer))
             ) {
                 Text("Reset")
             }
         }
         Button(
             onClick = onSetCustomTime,
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFC107))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32),
+                contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer))
         ) {
             Text("Set Custom Time")
         }
         Button(
             onClick = onBack,
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50),
+                contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer))
         ) {
             Text("Back")
         }

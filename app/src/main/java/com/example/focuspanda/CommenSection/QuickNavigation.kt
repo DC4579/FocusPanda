@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -45,7 +46,8 @@ fun MainsCard(
                 ambientColor = Color.Black,
                 spotColor = Color.Black
             ),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        shape = RoundedCornerShape(16.dp) //  to Add rounded corners to the card itself
     ) {
         Column(
             modifier = Modifier.padding(8.dp)
@@ -53,35 +55,28 @@ fun MainsCard(
             Image(
                 painter = painterResource(imageResourceId),
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop, // to Makes the image fill its area neatly
                 modifier = Modifier
-                    .height(110.dp)
-                    .fillMaxWidth()
-                    .shadow(
-                        elevation = 8.dp,
-                        shape = RoundedCornerShape(10.dp),
-                        ambientColor = Color.Black,
-                        spotColor = Color.Black
-                    ),
+                    .height(100.dp)
+                    .fillMaxWidth(0.7f)
+                    .clip(RoundedCornerShape(8.dp)) // Ensures the image respects rounded corners
             )
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = title,
                 fontSize = 16.sp,
                 style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp)
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
             )
             Text(
-                text = details, // Show details instead of title
+                text = details,
                 fontSize = 12.sp,
                 color = Color.Gray,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
 }
+

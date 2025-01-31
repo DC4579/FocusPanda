@@ -44,7 +44,7 @@ fun SignUpScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD7F2D3)) // Soft green background
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -57,7 +57,7 @@ fun SignUpScreen(navController: NavController) {
         ) {
             // Panda Image
             Image(
-                painter = painterResource(id = R.drawable.panda_image), // Replace with your panda image resource
+                painter = painterResource(id = R.drawable.panda_image),
                 contentDescription = "Focus Panda",
                 modifier = Modifier
                     .size(120.dp)
@@ -68,7 +68,7 @@ fun SignUpScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xCCFFFFFF)) // Semi-transparent white
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(24.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -77,7 +77,7 @@ fun SignUpScreen(navController: NavController) {
                     text = "Sign Up",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
@@ -150,20 +150,25 @@ fun SignUpScreen(navController: NavController) {
                                 ).show()
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF1B5E20),
+                            contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer)
+                        ),
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text(text = "Create Account", color = Color.White)
+                        Text(text = "Create Account")
                     }
 
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Button(
                         onClick = { navController.navigate("login") },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer)),
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text(text = "Go Back", color = Color.White)
+                        Text(text = "Go Back")
                     }
                 }
             }

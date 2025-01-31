@@ -41,7 +41,7 @@ fun LoginScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD7F2D3)) // Soft green background
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -54,7 +54,7 @@ fun LoginScreen(navController: NavController) {
         ) {
             // **Larger Panda Image**
             Image(
-                painter = painterResource(id = R.drawable.panda_image), // Update with your image resource
+                painter = painterResource(id = R.drawable.panda_image),
                 contentDescription = "Focus Panda",
                 modifier = Modifier
                     .size(200.dp) // **Increased size**
@@ -64,10 +64,10 @@ fun LoginScreen(navController: NavController) {
             // **Login Form Container**
             Card(
                 modifier = Modifier
-                    .fillMaxWidth(0.9f) // Makes it more compact
+                    .fillMaxWidth(0.9f)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0xCCFFFFFF)),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 shape = RoundedCornerShape(16.dp),
                 elevation = CardDefaults.elevatedCardElevation(6.dp)
             ) {
@@ -82,7 +82,7 @@ fun LoginScreen(navController: NavController) {
                         text = "Login",
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
@@ -90,7 +90,7 @@ fun LoginScreen(navController: NavController) {
                     OutlinedTextField(
                         value = username.value,
                         onValueChange = { username.value = it },
-                        label = { Text("User name") },
+                        label = { Text("User name",color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
@@ -140,20 +140,26 @@ fun LoginScreen(navController: NavController) {
                                     ).show()
                                 }
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20)),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF1B5E20),
+                                contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer)
+                            ),
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text(text = "Login", color = Color.White)
+                            Text(text = "Login")
                         }
 
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Button(
                             onClick = { navController.navigate("signup") },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer)
+                            ),
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text(text = "Sign Up", color = Color.White)
+                            Text(text = "Sign Up")
                         }
                     }
                 }

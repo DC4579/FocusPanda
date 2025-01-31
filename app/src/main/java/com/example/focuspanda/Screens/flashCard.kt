@@ -40,33 +40,33 @@ fun FlashcardScreen() {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Flashcard
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(16.dp)
-                    .clickable { isFrontVisible = !isFrontVisible },
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = if (isFrontVisible) flashcards[selectedCardIndex].front else flashcards[selectedCardIndex].back,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
+//            // Flashcard
+//            Card(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .weight(1f)
+//                    .padding(16.dp)
+//                    .clickable { isFrontVisible = !isFrontVisible },
+//                shape = RoundedCornerShape(16.dp),
+//                colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+//            ) {
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(16.dp),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    Text(
+//                        text = if (isFrontVisible) flashcards[selectedCardIndex].front else flashcards[selectedCardIndex].back,
+//                        fontSize = 24.sp,
+//                        fontWeight = FontWeight.Bold,
+//                        color = Color.Black,
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
+//            }
 
-            // Edit Buttons
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

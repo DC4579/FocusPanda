@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
 fun AppNavigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "splash") { // ✅ Set SplashScreen as start destination
+    NavHost(navController = navController, startDestination = "splash") { //  Set SplashScreen as start destination
         composable("splash") { SplashScreen(navController) }
         composable("login") { LoginScreen(navController) }
         composable("signup") { SignUpScreen(navController) }
@@ -50,7 +50,7 @@ fun AppNavigation() {
 @Composable
 fun SplashScreen(navController: NavController) {
     LaunchedEffect(Unit) {
-        delay(3000L) // 3 seconds delay for the splash screen
+        delay(4000L) // 4 seconds delay for the splash screen
         navController.navigate("login") {
             popUpTo("splash") { inclusive = true } // Remove splash screen from backstack
         }
@@ -59,21 +59,21 @@ fun SplashScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD7F2D3)), // ✅ Light green background
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.splash_screen), // ✅ Replace with your image
+            painter = painterResource(id = R.drawable.splash_screen),
             contentDescription = "Splash Screen Logo",
-            modifier = Modifier.size(900.dp) // ✅ Adjust size for better scaling
+            modifier = Modifier.size(900.dp)
         )
-        Spacer(modifier = Modifier.height(16.dp)) // Space between image and text
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // ✅ Stylized Text with MaterialTheme Typography
+        //   MaterialTheme Typography
         Text(
             text = "Focus Panda",
-            style = MaterialTheme.typography.displaySmall, // ✅ Material3 Typography
-            color = MaterialTheme.colorScheme.onPrimaryContainer, // ✅ Use theme-based colors
+            style = MaterialTheme.typography.displaySmall,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(top = 100.dp)
         )
     }

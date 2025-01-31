@@ -81,7 +81,7 @@ fun MainScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFD7F2D3)) // ✅ Soft green background
+                .background(MaterialTheme.colorScheme.background) //
                 .padding(paddingValues)
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.Top,
@@ -138,7 +138,7 @@ fun MainScreen(navController: NavController) {
                     .align(Alignment.Start)
             )
 
-            // ✅ Optimized LazyRow
+            //  LazyRow
             ItemList(
                 featureList = QuickNavigationIterm().loadQuickNavigationIterm(),
                 navController = navController
@@ -158,31 +158,90 @@ fun MainScreen(navController: NavController) {
             MusicCard(
                 title = "Rain Sounds",
                 description = "Relaxing rain sounds for focus",
-                audioResId = R.raw.rain_sounds // Replace with your raw audio file
+                audioResId = R.raw.rain_sounds
             )
 
             MusicCard(
                 title = "Forest Sounds",
                 description = "Calming forest sounds for study",
-                audioResId = R.raw.forest_sounds // Replace with your raw audio file
+                audioResId = R.raw.forest_sounds
+            )
+            Text(
+                text = "Study Tools",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(Alignment.Start)
             )
 
-
-            // Navigate to Pomodoro or Flashcards
-            ClickableImage(
+            // Pomodoro Timer Card
+            FeatureCard(
                 imageRes = R.drawable.pomodoro,
-                description = "Pomodoro Timer",
+                title = "Pomodoro Timer",
+                description = "Use focused time blocks for productivity.",
                 onClick = { navController.navigate("pomodoro") }
             )
 
-            ClickableImage(
-                imageRes = R.drawable.flashcards,
-                description = "Flashcards",
+            // Flashcards Card
+            FeatureCard(
+                imageRes = R.drawable.to_do_list,
+                title = "To do List",
+                description = "stay Organized and get more work done.",
                 onClick = { navController.navigate("todo") }
             )
         }
     }
 }
+
+@Composable
+fun FeatureCard(imageRes: Int, title: String, description: String, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .height(150.dp)
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor =  MaterialTheme.colorScheme.surfaceVariant),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Image
+            Image(
+                painter = painterResource(imageRes),
+                contentDescription = title,
+                modifier = Modifier
+                    .size(100.dp)
+                    .padding(start = 16.dp)
+            )
+
+            // Text Column
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp, end = 16.dp)
+            ) {
+                Text(
+                    text = title,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = description,
+                    fontSize = 14.sp,
+                    color =  MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
 
 
 @Composable
@@ -213,7 +272,7 @@ fun ItemList(featureList: List<QuickNavigate1>, navController: NavController) {
     }
 }
 
-// ✅ Optimized ItemCard with Animation & Fixed Navigation
+//  ItemCard with Animation &  Navigation
 @Composable
 fun ItemCard(item: QuickNavigate1, navController: NavController) {
     var isPressed by remember { mutableStateOf(false) }
@@ -223,7 +282,7 @@ fun ItemCard(item: QuickNavigate1, navController: NavController) {
         modifier = Modifier
             .clickable {
                 isPressed = true
-                val encodedFeature = item.feature.replace(" ", "_") // Encode feature for navigation
+                val encodedFeature = item.feature.replace(" ", "_") // to take in empty spaces
                 navController.navigate("details/$encodedFeature")
             }
             .graphicsLayer(scaleX = scale, scaleY = scale)
@@ -232,7 +291,7 @@ fun ItemCard(item: QuickNavigate1, navController: NavController) {
             imageResourceId = item.imageResId,
             title = item.feature,
             details = item.details,
-            backgroundColor = Color.White
+            backgroundColor = MaterialTheme.colorScheme.surfaceVariant
         )
     }
 
@@ -261,10 +320,14 @@ fun DetailScreen(navController: NavController, feature: String?) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = decodedFeature ?: "Feature Detail") },
+                title = { Text(text = decodedFeature ?: "Feature Detail",
+                color = MaterialTheme.colorScheme.onBackground )
+                        },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer)
+
                     }
                 }
             )
@@ -273,18 +336,26 @@ fun DetailScreen(navController: NavController, feature: String?) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFD7F2D3))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = decodedFeature ?: "Feature", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(text = decodedFeature ?: "Feature",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(text = detailText, fontSize = 18.sp, color = Color.Black)
+                Text(text = detailText, fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer)
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = { navController.popBackStack() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
                 ) {
                     Text("Back")
                 }
@@ -298,7 +369,7 @@ fun MusicCard(title: String, description: String, audioResId: Int) {
     var isPlaying by remember { mutableStateOf(false) }
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
 
-    // Clean up MediaPlayer when the composable is removed
+    //  for Clean up MediaPlayer when the composable is removed
     DisposableEffect(Unit) {
         onDispose {
             mediaPlayer?.release()
@@ -311,7 +382,7 @@ fun MusicCard(title: String, description: String, audioResId: Int) {
             .fillMaxWidth()
             .padding(8.dp)
             .height(100.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE7F3E9)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Row(
@@ -324,8 +395,13 @@ fun MusicCard(title: String, description: String, audioResId: Int) {
                     .padding(start = 16.dp)
                     .weight(1f)
             ) {
-                Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text(text = description, fontSize = 14.sp, color = Color.Gray)
+                Text(text = title, fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface)
+
+                Text(text = description,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
             Button(
@@ -334,14 +410,15 @@ fun MusicCard(title: String, description: String, audioResId: Int) {
                         mediaPlayer?.pause()
                     } else {
                         if (mediaPlayer == null) {
-                            mediaPlayer = MediaPlayer.create(context, audioResId) // ✅ Use context here
+                            mediaPlayer = MediaPlayer.create(context, audioResId)
                         }
                         mediaPlayer?.start()
                     }
                     isPlaying = !isPlaying
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isPlaying) Color.Red else Color(0xFF4CAF50)
+                    containerColor = if (isPlaying) Color.Red else Color(0xFF4CAF50),
+                    contentColor =  (MaterialTheme.colorScheme.onSecondaryContainer)
                 ),
                 modifier = Modifier.padding(end = 16.dp)
             ) {

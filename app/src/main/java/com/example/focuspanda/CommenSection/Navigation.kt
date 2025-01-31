@@ -3,6 +3,7 @@ package com.example.focuspanda.CommenSection
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
@@ -53,7 +54,7 @@ fun BottomNavigationScreen(navController: NavController) {
 fun BottomNavigationBar(navController: NavController) {
     val navItems = listOf(
         NavIterm("pomodoro", Icons.Default.Star),
-        NavIterm("todo", Icons.Default.Settings),
+        NavIterm("todo", Icons.Default.DateRange),
         NavIterm("dashboard", Icons.Default.List),
         NavIterm("profile", Icons.Default.Person)
     )
@@ -83,10 +84,10 @@ fun AppNavHost() {
 
     NavHost(
         navController = navController,
-        startDestination = "splash" // Set Splash as the first screen
+        startDestination = "splash" // adds Splash as the first screen
     ) {
-        composable("splash") { SplashScreen(navController) } // Add SplashScreen here
-        composable("login") { LoginScreen(navController) } // Add LoginScreen here
+        composable("splash") { SplashScreen(navController) }
+        composable("login") { LoginScreen(navController) }
         composable("main") { BottomNavigationScreen(navController) } // Bottom navigation
     }
 }
