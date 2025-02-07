@@ -109,7 +109,7 @@ fun MainScreen(navController: NavController) {
                     Image(
                         painter = painterResource(id = R.drawable.dilshan),
                         contentDescription = "User Profile",
-                        modifier = Modifier.size(60.dp)
+                        modifier = Modifier.size(50.dp)
                     )
                 }
             }
